@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "iOo2L0P/Tb7eqp9f9lKlrcjw3TrRnS9E2SkqMhbCsH2dmMkbhBZqDGTMU8zKrbRH+25EPxwRJmqaCo53ahuoKg==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\Kyle\\Source\\Repos\\Examples\\ChatSystem\\ChatClient\\ChatClient.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Kyle\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\3.1.10\\microsoft.aspnetcore.app.ref.3.1.10.nupkg.sha512",
+    "C:\\Users\\Kyle\\.nuget\\packages\\microsoft.netcore.app.host.win-x64\\3.1.10\\microsoft.netcore.app.host.win-x64.3.1.10.nupkg.sha512"
+  ],
+  "logs": []
+}
