@@ -1,0 +1,145 @@
+---
+title: "MATH 3080 Lab Project 10"
+author: "Kyle Kazemini"
+date: "02/05/2020"
+output:
+  pdf_document:
+    toc: TRUE
+---
+
+# Problem 1 (Verzani problem 11.22)
+
+*For the data set `trees`, model the `Volume` by the `Girth` and `Height`
+variables. Does the model fit the data well?*
+
+```{r, error = TRUE}
+data("trees")
+
+fit <- lm(Volume ~ Girth + Height, data = trees)
+#This models the volume based on multiple variables
+
+summary(fit)$r.squared
+#This R squared value shows that the model fits the data well
+```
+
+# Problem 2 (Verzani problem 11.24)
+
+*For the `deflection` (**UsingR**) data set, fit the quadratic model*
+
+$$\text{Deflection} = \beta_0 + \beta_1 \text{Load} + \beta_2 \text{Load}^2 +
+\epsilon.$$
+
+*How well does this model fit the data? Compare to the linear model.*
+
+```{r, error = TRUE}
+data("deflection")
+
+fit <- lm(Deflection ~ Load + I(Load^2), data = deflection)
+
+summary(fit)$r.squared
+#This is an excellent model for the data
+
+linear <- lm(Deflection ~ Load, data = deflection)
+
+summary(linear)$r.squared
+#This is also an excellent model for the data
+```
+
+# Problem 3 (Verzani problem 11.25)
+
+*The data set `kid.weights` contains age, weight, and height measurements for
+several children. Fit the linear model*
+
+$$\text{weight} = \beta_0 + \beta_1 \text{age} + \beta_2 \text{height} + \beta_3
+\text{height}^2 + \beta_4 \text{height}^3 + \beta_5 \text{height}^4$$
+
+*Use the partial $F$-test to select between this model and the nested models
+found by using only first-, second-, and third-degree polynomials for `height`.*
+
+```{r, error = TRUE}
+data("kid.weights")
+
+fit <- lm(weight ~ age + height, data = kid.weights)
+
+fit2 <- lm(weight ~ height, data = kid.weights)
+fit3 <- lm(weight ~ height + I(height^2), data = kid.weights)
+fit4 <- lm(weight ~ height + I(height^2) + I(height^3), data = kid.weights)
+
+anova(fit, fit2, fit3, fit4)
+#This test shows that model 4 is the best
+```
+
+# Problem 4 (Verzani problem 11.27)
+
+*The data set `Cars93` (**MASS**) contains data on cars sold in the United
+States in the year 1993. Fit a regression model with `MPG.city` modeled by the
+numeric variables `EngineSize`, `Weight`, `Passengers`, and `Price`. Which
+variables are marked as statistically significant by the marginal $t$-tests?
+Which model is selected by the AIC?*
+
+```{r, error = TRUE}
+data("Cars93")
+
+aic_compare <- function(fit1, fit2) {
+  exp((AIC(fit1) - AIC(fit2)) / 2)
+}
+
+min_aic_model <- function(...) {
+  models <- list(...)
+  aic_list <- sapply(models, AIC)
+  best_model <- models[[which.min(aic_list)]]
+  best_model
+}
+
+fit <- lm(MPG.city ~ EngineSize, data = Cars93)
+fit2 <- lm(MPG.city ~ Weight, data = Cars93)
+fit3 <- lm(MPG.city ~ Passengers, data = Cars93)
+fit4 <- lm(MPG.city ~ Price, data = Cars93)
+
+best_fit <- min_aic_model(fit, fit2, fit3, fit4)
+
+sapply(list(fit, fit2, fit3, fit4), function(l) {aic_compare(best_fit, l)})
+#This shows that the best model is fit3
+```
+
+# Problem 5 (Verzani problem 11.29)
+
+*The data set `baycheck` (**UsingR**) contains estimated populations for a
+variety of Bay Checkerspot butterflies near California. A common model for
+population dynamics is the Ricker model, for which $t$ is time in years:
+
+$$N_{t + 1} = aN_t e^{bN_t} W_t,$$
+
+*where $a$ and $b$ are parameters and $W_t$ is a lognormal multiplicative error.
+This can be turned into a regression model by dividing by $N_t$ and then taking
+logs of both sides to give*
+
+$$\log\left(\frac{N_{t + 1}}{N_t}\right) = \log(a) + b N_t + \epsilon_t.$$
+
+*Let $y_t$ be the left-hand side. This may be written as*
+
+$$y_t = r\left(1 - \frac{N_t}{K}\right) + \epsilon_t,$$
+
+*because $r$ can be interpreted as an unconstrained growth rate and $K$ as a
+carrying capacity.*
+
+*Fit the model to the `baycheck` data set and find values for $r$ and $K$. To
+find $y_t$ you can do the following:*
+
+```{r, error = TRUE}
+d <- with(baycheck, {
+  n <- length(year)
+  yt <- log(Nt[-1]/Nt[-n])
+  nt <- Nt[-n]
+  data.frame(yt, nt)
+})
+```
+
+*Recall that a negative index means all but that index.*
+
+```{r, error = TRUE}
+fit <- lm(d$nt ~ d$yt, data = baycheck)
+fit
+#This is a simple model based on the calculations and formulas above
+```
+

@@ -1,0 +1,104 @@
+---
+title: "MATH 3080 Lab Project 11"
+author: "Kyle Kazemini"
+date: "02/05/2020"
+output:
+  pdf_document:
+    toc: TRUE
+---
+
+# Problem 1 (Verzani problem 12.28)
+
+*In the data set `mtcars` the variables `mpg`, `cyl`, and `am` indicate the
+miles per gallon, the number of cylinders, and the type of transmission,
+respectively. Perform a two-way ANOVA modeling `mpg` by the `cyl` and `am`, each
+treated as a categorical variable.*
+
+*Is there an indication of an interaction? Do both the number of cylinders and
+the type of transmission make a difference?*
+
+```{r, error = TRUE}
+data("mtcars")
+
+fit <- lm(mpg ~ as.factor(cyl) + as.factor(am), data = mtcars)
+
+anova(fit)
+#Based on this two-way ANOVA, there is an indication of an interaction. Both of these factors make a difference
+```
+
+# Problem 2 (Verzani problem 12.29)
+
+*The data set `ToothGrowth` has measurements of tooth growth (`len`) of guinea
+pigs for different dosages of Vitamin C (`dose`) and two different delivery
+methods (`supp`).*
+
+*Perform a two-way analysis of variance of tooth growth modeled by dosage and
+delivery method. First, fit the full model including interactions and use the
+$F$-test to compare this with the additive model.*
+
+```{r, error = TRUE}
+data("ToothGrowth")
+
+fit1 <- lm(len ~ as.factor(dose), data = ToothGrowth)
+fit2 <- lm(len ~ as.factor(supp), data = ToothGrowth)
+fit3 <- lm(len ~ as.factor(dose) + as.factor(supp), data = ToothGrowth)
+
+anova(fit1, fit2)
+aov(fit3)
+#This shows that both the aov() and anova() functions can perform two-way ANOVA
+#The statistics below show the differences between the full models and additive model
+```
+
+# Problem 3 (Verzani problem 12.30)
+
+*The data set `OrchardSprays` contains measurements on the effectiveness of
+various sprays on repelling honeybees. The variable `decrease` measures
+effectiveness of the spray, `treatment` records the type of treatment, and
+`rowpos` records the row in the field the measurement comes from.*
+
+*Make an interaction plot of the mean of `decrease` with `treatment` as a trace
+factor. Then fit the additive analysis-of-variance model and the model with
+interaction. Compare the two models using `anova`. Is the interaction model
+suggested by the results of the modeling?*
+
+```{r, error = TRUE}
+data("OrchardSprays")
+
+fit1 <- lm(decrease ~ treatment, data = OrchardSprays)
+fit2 <- lm(decrease ~ rowpos, data = OrchardSprays)
+
+with(OrchardSprays, interaction.plot(rowpos, treatment, decrease))
+#Interaction plot
+
+anova(fit1, fit2)
+#The interaction model is suggested by the results of the modeling
+```
+
+# Problem 4 (Verzani problem 12.31)
+
+*What does R output when there is not enough data to estimate the parameters and
+an error term? We check with a simple example. In checking a comment that
+everything is better with butter on it, a student asks four people to rate the
+four combinations of bread and corn with and without butter. The data collected
+is:*
+
+```{r}
+d <- data.frame(
+  rating = c(8, 6, 8, 4),
+  food = gl(2, 2, 4, labels = c("bread", "corn")),
+  butter = gl(2, 1, 4, labels = c("yes", "no"))
+)
+xtabs(rating ~ butter + food, d)
+with(d, interaction.plot(butter, food, rating))
+```
+
+*Look at the summary of the multiplicative model*
+
+```{r}
+summary(lm(rating ~ butter * food, d))
+```
+
+*Do the coefficients get estimated? What is the issue then?*
+
+**The coefficients do not get estimated. This is because there is not 
+enough data to estimate the parameters or an error term.**

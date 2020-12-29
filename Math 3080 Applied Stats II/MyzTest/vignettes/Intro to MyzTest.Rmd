@@ -1,0 +1,20 @@
+---
+title: "Intro to MyzTest"
+author: "Kyle Kazemini"
+date: "2020-02-21"
+output: rmarkdown::html_vignette
+---
+
+vignette: >
+%\VignetteIndexEntry{Intro to MyzTest}
+%\VignetteEngine{knitr::rmarkdown}
+\usepackage[utf8]{inputenc}
+---
+# Introduction
+The **MyzTest** package was developed to implement a tool useful for statistical analysis.
+Try typing the following after installing the package:
+```r
+library(MyzTest)
+z.test(x, sigma, mu, alternative = "greater", 0.99)
+```
+*To be continued...*

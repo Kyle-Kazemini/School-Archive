@@ -1,0 +1,155 @@
+---
+title: "MATH 3080 Lab Project 2"
+author: "Kyle Kazemini"
+date: "12/28/2019"
+output:
+  pdf_document:
+    toc: TRUE
+---
+
+# Problem 1
+
+*The function `parent.env()` returns the parent environment of an input
+environment, and if `env` is an environment, then `ls(envir = env)` returns a
+character vector listing all objects in the environment. Write a function
+`ls_ancestors()` that takes an environment `envir` as an input and returns all
+object names not just in the input environment but all ancestor environments
+too. (Hint: your function should use a `while` loop that terminates when it
+reaches the ultimate ancestor of all environments: the empty environment, the
+only environment without an ancestor.) **BEWARE: IF YOUR CODE TAKES LONGER THAN
+10 SECONDS TO RUN, YOU WILL NOT RECEIVE CREDIT!***
+
+```{r, error = TRUE}
+ls_ancestors <- function(envir) {
+  envList <- c()
+  while (!identical(envir, emptyenv())) {
+    envList <- c(envList, ls(envir = envir))
+    envir <- parent.env(envir)
+  }
+  return(envList)
+}
+```
+
+# Problem 2
+
+*The Fibonacci sequence is a sequence $f_n$ such that $f_1 = 1$, $f_2 = 1$, and
+for all $n \geq 3$,*
+
+$$f_n = f_{n - 1} + f_{n - 2}.$$
+
+*Write a function that returns a closure that produces the next element of the
+Fibonacci sequence every time is called, with the exception of the first two
+terms. Call the function returning the closure `fib_gen()`.*
+
+```{r, error = TRUE}
+fib_gen <- function(f1 = 1, f2 = 1) {  # Could choose different sequence inits
+  f1 + f2
+  function() {
+    ftemp <- f2
+    f2 <<- f1 + f2
+    f1 <<- ftemp
+    f2
+  }
+}
+```
+
+*The following code will be used to test that `fib_gen()` works as intended.*
+
+```{r, error = TRUE}
+# Test code; DO NOT EDIT!
+f <- fib_gen()
+f()  # Should be 2
+f()  # Should be 3
+f()  # Should be 5
+f()  # Should be 8
+f()  # Should be 13
+```
+
+# Problem 3
+
+*Consider the problem of plotting and minimizing the sum of square errors
+presented in the lecture. The **sum of absolute errors (SAE)** can be
+similarly defined as:*
+
+$$SAE(\theta) = \sum_{i=1}^n \left|x_i - \theta \right|.$$
+
+*Handle $SAE(\theta)$ like $SSE(\theta)$ was handled in the lecture by writing a
+function that returns closures representing $SAE(\theta)$ for input data sets.
+Demonstrate your function works by:*
+
+1. *Generating a random data set using `rnorm()` with a mean of $\mu=10$;*
+2. *Plotting $SAE(\theta)$ for the data set in the neighborhood of $\theta =
+   10$; and*
+3. *Minimizing $SAE(\theta)$ with `optimize()`.*
+
+*Compare the results of `optimize()` with the median of your data set.
+(Theoretically, it can be shown that the $\theta$ that minimizes $SAE(\theta)$
+is the sample median; however, this* cannot *be shown using simple calculus
+since $SAE(\theta)$ is not differentiable in $\theta$ everywhere. For this
+reason as well, `optimize()` does not work well since the numerical procedure
+requires the input function being minimized also be differentiable.)*
+
+```{r, error = TRUE}
+sae_computer <- function(x) {
+  f <- function(t) {
+  if (!is.numeric(t) || length(t) > 1) 
+    stop("Invalid t")
+  sum(abs(x - t))
+  }
+  Vectorize(f)
+}
+x <- rnorm(40, mean = 10)
+sae <- sse_computer(x)
+
+#Now we'll graph and compare with optimize.
+curve(sae, 6, 14)
+
+optimize(sae, c(-100, 100))
+```
+
+# Problem 4
+
+*Recall the bootstrapping procedure, where one resamples from the original data
+set, with replacement, to produce new data sets on which statistics can be
+computed. Write a function `bootstrap_gen()` that returns closures that produce
+bootstrap replicates of an input data set. Use this function to produce
+bootstrap confidence intervals for the mean of the following data set `dat`.*
+
+```{r, error = TRUE}
+dat <- c(1.2, 2.1, 0.3, 8.7, 4.4, 5.4)  # DO NOT EDIT
+bootstrap_gen <- function(x) {
+  function() {
+    sample(x, size = length(x), replace = TRUE)
+  }
+}
+#Now use the function to produce confidence intervals for the mean.
+f <- bootstrap_gen(dat)
+mean_boot <- replicate(1000, {
+     mean(f())
+ })
+  quantile(mean_boot, c(0.025, 0.975))
+```
+
+# Problem 5
+
+*Write a function `multiply<-()` that can be used to multiply a selected element
+in the numeric vector supplied to the function by the amount listed to the right
+of the assignment operator.*
+
+```{r, error = TRUE}
+`multiply<-` <- function(x, pos = 1, value) {
+  x[pos] = x[pos] * value
+  return(x)
+}
+```
+
+*The following will be used to test that your function works properly:*
+
+```{r, error = TRUE}
+# Test code; DO NOT EDIT!
+vec <- 1:10
+multiply(vec) <- 2
+multiply(vec, 3) <- 10
+vec  # vec[1] should be 2 and vec[3] should be 30
+```
+

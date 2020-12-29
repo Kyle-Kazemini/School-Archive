@@ -1,0 +1,131 @@
+---
+title: "MATH 3080 Lab Project 4"
+author: "Kyle Kazemini"
+date: "12/29/2019"
+output:
+  pdf_document:
+    toc: TRUE
+---
+
+# Problem 1 (Verzani problem 12.2)
+
+*For the data set `Cars93` (**MASS**) perform a one-way analysis of variance of
+`MPG.highway` for each level of `DriveTrain`. Does the data support the null
+hypothesis of equal population means? (Use `aov()` for this problem.)*
+
+```{r, error = TRUE}
+library(MASS)
+data(Cars93)
+
+res <- aov(MPG.highway ~ DriveTrain, data = Cars93)
+print(res)
+summary(res)
+#This data does support the null hypothesis of equal population means.
+```
+
+# Problem 2 (Verzani problem 12.4)
+
+*The data set `carsafety` (**UsingR**) contains car-crash data. For several
+makes of cars the number of drivers killed per million is recorded in
+`Drivers.deaths`. The number of drivers of other cars killed in accidents with
+these cars, per million, is recorded in `Other.deaths`. The variable `type` is a
+factor indicating the type of car.*
+
+*Perform a one-way analysis of variance of the model `Drivers.deaths ~ type`. Is
+there a difference in population means? Did you assume equal variances? Normally
+distributed populations?*
+
+*Repeat with an analysis of variance of the model `Other.deaths ~ type`. Is
+there a difference in population means? (Use `oneway.test()` for this problem.)*
+
+```{r, error = TRUE}
+library(UsingR)
+data(carsafety)
+
+res1 <- oneway.test(Driver.deaths ~ type, data = carsafety)
+print(res1)
+summary(res1)
+#This test shows that there's no difference in population means. 
+#We assumed equal variances and normally distributed populations.
+
+res2 <- oneway.test(Other.deaths ~ type, data = carsafety)
+print(res2)
+summary(res2)
+#This test shows that there is a non-trivial difference in population means.
+#We assumed equal variances and normally distributed populations.
+```
+
+# Problem 3 (Verzani problem 12.7)
+
+*A manufacturer of point-of-sale merchandise tests three types of ENTER-button
+markings. They wish to minimize wear, as customers get annoyed when the markings
+on this button wear off. They construct a test of the three types, and conduct
+several trials for each. The results, in unspecified units, are recorded in the
+following table:*
+
+|        |     |     |     |     |     |     |
+|--------|-----|-----|-----|-----|-----|-----|
+| Type 1 | 303 | 293 | 296 | 299 | 298 |     |
+| Type 2 | 322 | 326 | 315 | 318 | 320 | 320 |
+| Type 3 | 309 | 327 | 317 | 315 |     |     |
+
+*Is there a difference in wear time among the three types? Answer this using a
+one-way ANOVA.*
+
+```{r, error = TRUE}
+df <- data.table::data.table(c("Type 1" = 303, 293, 296, 299, 298), c("Type 2" = 322, 326, 315, 318, 320, 320), 
+                             c("Type 3" = 309, 327, 317, 315))
+
+res1 <- aov(V1 ~ V2, data = df)
+print(res1)
+
+res2 <- aov(V1 ~ V3, data = df)
+print(res2)
+
+res3 <- aov(V2 ~ V3, data = df)
+print(res3)
+
+#Based on the results from the ANOVA tests, there is a difference in wear time among the three types.
+```
+
+# Problem 4 (Verzani problem 12.13)
+
+*For the data in Problem 2, perform the one-way ANOVA using `lm()`. Compare to
+the results of `oneway.test()`.*
+
+```{r, error = TRUE}
+res1 <- lm(Driver.deaths ~ type - 1, data = carsafety)
+print(res1)
+summary(res1)
+
+res2 <- lm(Other.deaths ~ type - 1, data = carsafety)
+print(res2)
+summary(res2)
+
+#The results are different for both of the above tests from the tests in problem two
+#because the lm function gives more classes and values for the data.
+```
+
+# Problem 5 (Verzani problem 12.19)
+
+*The `InsectSprays` data set contains a variable `count`, which counts the
+number of insects and a factor `spray`, which indicates the treatment given.*
+
+*First perform an analysis of variance to see whether the treatments make a
+difference. If so, perform the Tukey HSD procedure to see which pairwise
+treatments differ.*
+
+```{r, error = TRUE}
+data("InsectSprays")
+
+res <- aov(count ~ spray, data = InsectSprays)
+print(res)
+#The aov test indicates that the treatment makes a difference.
+
+TukeyHSD(res)
+plot(TukeyHSD(res))
+#This plot shows the differences in pairwise treatments.
+#Zero is in several of these intervals. This means there's significant evidence
+#that some pairs have the same means and some don't.
+```
+

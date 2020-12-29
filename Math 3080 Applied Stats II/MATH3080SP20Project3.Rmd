@@ -1,0 +1,179 @@
+---
+title: "MATH 3080 Lab Project 3"
+author: "Kyle Kazemini"
+date: "12/29/2019"
+output:
+  pdf_document:
+    toc: TRUE
+---
+
+# Problem 1
+
+*List all the S3 methods associated with the `summary()` generic function.*
+
+```{r, error = TRUE}
+methods(summary)
+#This displays all S3 methods of summary.
+```
+
+# Problem 2
+
+*There is no function in the **stats** package for the $z$ test. In this
+exercise, you will write that function. Furthermore, since we want this function
+to emulate functions such as `t.test()`, you will write a function `z.test()`
+that returns an `htest`-class object. This is mostly so we can take advantage of
+`print.htest()` in the **stats** package:*
+
+```{r}
+stats:::print.htest
+```
+
+*Let's start by studying the structure of the object returned by `t.test()`:*
+
+```{r}
+x <- rnorm(10)
+res <- t.test(x)
+str(res)
+```
+
+*Let's also look at the `t.test()` function. It turns out that `t.test()` is a
+generic function, so we should actually look at `t.test.default()`:*
+
+```{r}
+args(stats:::t.test.default)
+```
+
+*Based on this we should have our `z.test()` function take the following
+inputs:*
+
+* *`x`: The input data vector*
+* *`sigma`: The value of the population standard deviation*
+* *`mu`: The population mean under the null hypothesis*
+* *`alternative`: A string that's one of `"two.sided"`, `"less"`, or
+  `"greater"`, which matters for both the null hypothesis and the confidence
+  interval returned*
+* *`conf.level`: A number representing the confidence level of the confidence
+  interval*
+
+*The output of `z.test()` should resemble `res` shown above.*
+
+```{r, error = TRUE}
+z.test <- function(x, sigma = NULL, mu = 0, alternative = "two.sided",
+                   conf.level = 0.95) {
+  rval <- list()
+
+  # I will do this part: understanding the following line requires
+  # metaprogramming knowledge
+  rval$data.name <- deparse(substitute(x))
+  
+  if (is.null(sigma)) {
+    sigma <- sd(x)
+  }
+
+  xbar <- mean(x)
+  n <- length(x)
+  z<- (xbar - mu) / (sigma / sqrt(n))
+  stderr <- sigma / sqrt(n)
+  estimate <- mean(x)
+  conf.int <- confint(x, sigma, level = 0.95)
+  null.value <- NULL
+  alternative <- "two.sided"
+  method <- "z.test"
+  
+  rval$statistic <- c(statistic = z)
+  rval$parameter <- c(sigma = sigma)  # I'll also do parameter
+  rval$conf.int <- c(conf.int = conf.int)
+  rval$estimate <- c(estimate = estimate)
+  rval$null.value <- c(null.value = null.value)
+  rval$stderr <- c(stderr = stderr)
+  rval$alternative <- c(alternative = alternative)
+  rval$method <- c(method = method)
+  
+  class(rval) <- "htest"
+  return(str(rval))
+}
+```
+
+*The code below tests that `z.test()` works as intended.*
+
+```{r, error = TRUE}
+# Test code: DO NOT EDIT!
+dat <- c(0.6, -0.7, 0.8, -0.2, 1.8, 0.1, 0.1, -0.4, -0.6, 0.6)
+z.test(dat, sigma = 1)
+z.test(dat, sigma = 2, mu = 1, alternative = "less", conf.level = 0.9)
+z.test(dat, sigma = 0.5, mu = 2, alternative = "greater", conf.level = 0.99)
+```
+
+# Problem 3
+
+*Design S3 classes representing:*
+
+* *A circle*
+* *A rectangle*
+* *A square*
+
+*Be sure to write functions that construct these objects for the user. Then
+write two generic functions, `area()` and `perimeter()`, that find the area and
+perimeters of the respective objects. Write `print()` methods for your objects.
+Demonstrate that your code works. These objects should be defined in meaningful
+ways, allowing users to create objects of different size and shape.*
+
+**BONUS:** *Since squares are also rectangles, you could save time and write
+better code by having the square class inherit from the rectangle class. You
+should have separate `print()` methods for squares and rectangles, but the
+`area()` and `perimeter()` methods could be shared.*
+
+```{r, error = TRUE}
+rectangle <- function(width, height){
+  w <- c(width = width, height = height)
+  class(w) <- "rectangle"
+  w
+}
+circle <- function(radius){
+  r <- c(radius = radius)
+  class(r) <- "circle"
+  r
+}
+
+square <- function(sideLength){
+  s <- c(sideLength = sideLength)
+  class(s) <- c("square", "rectangle")
+  s
+}
+
+perimiter <- function(x) usedMethod("perimiter")
+
+perimiter.rectangle <- function(x){
+  (x[{"width"}]*2) + (x[{"height"}]*2)
+}
+
+area.rectangle <- function(width, height){
+  (x[{"width"}]) * (x[{"height"}])
+}
+
+perimiter.circle <- function(radius){
+  (x[("radius")]*2*pi)
+}
+
+area.circle <- function(radius){
+ (x[("radius")]^2*pi)
+}
+
+print.circle <- function(x) {
+  cat("Circle of radius", x[["radius"]], "\n")
+}
+
+print.rectangle <- function(x){
+  cat("Rectangle with width", x[["width"]], "and height", x[["height"]], "\n")
+}
+
+print.square <- function(x){
+  cat("Square with side length ", x[["sideLength"]], "\n")
+}
+
+circle(3)
+rectangle(4, 5)
+square(4)
+circle(12)
+```
+

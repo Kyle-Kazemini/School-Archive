@@ -1,0 +1,129 @@
+---
+title: "MATH 3080 Lab Project 12"
+author: "Kyle Kazemini"
+date: "02/05/2020"
+output:
+  pdf_document:
+    toc: TRUE
+---
+
+# Problem 1 (Verzani problem 9.17)
+
+*The `exec.pay` (**UsingR**) data set contains data on the salaries of CEOs at
+199 top companies in the United States. The amounts are in \$10,000s. The data
+is not symmetric. Do a sign test to determine whether the median pay is more
+than \$220,000.*
+
+```{r, error = TRUE}
+library(UsingR)
+data("exec.pay")
+
+sign.test <- function(x, q = 0, p = 0.5, alternative = "two.sided") {
+res <- list()
+res$data.name <- deparse(substitute(x))
+res$estimate <- c("quantile" = quantile(x, p)[[1]])
+x <- x[x != q] # Delete observations matching q exactly
+res$method <- "Sign Test"
+res$parameter <- c("p" = p)
+res$alternative <- alternative
+res$null.value <- c("quantile" = q)
+res$statistic <- c("T" = sum(x > q))
+n <- length(x)
+res$p.value <- with(res, switch(alternative,
+greater = pbinom(statistic - 1, size = n, prob = p, lower.tail = FALSE),
+less = pbinom(n - statistic + 1, size = n, prob = p, lower.tail = FALSE),
+two.sided = pbinom(max(statistic - 1, n - statistic + 1), size = n,
+prob = p, lower.tail = FALSE)
+))
+class(res) <- "htest"
+res
+}
+
+sign.test(exec.pay, q = 220000, p = 0.5, alternative = "greater")
+#This p-value suggests that the median pay is not more than $220,000
+```
+
+# Problem 2 (Verzani problem 9.18)
+
+*Repeat the previous exercise, using the signed-rank test on the log-transformed
+data. Do you reach the same conclusion?*
+
+```{r, error = TRUE}
+log <- log1p(exec.pay)
+sign.test(log, q = 220000, p = 0.5, alternative = "greater")
+#The same conclusion is reached from the log-transformed data. 
+#The median pay is not more than $220,000
+```
+
+# Problem 3 (Verzani problem 9.20)
+
+*If the sign test has fewer assumptions on the population, why wouldn't we
+always use that instead of a $t$-test? The answer lies in the power of the sign
+test to detect when the null hypothesis is false. The sign test will not reject
+a false null as often as the $t$-test. The following commands will perform a
+simulation comparing the two tests on data that has a $N(1, 2)$ distribution.
+The significance tests performed are both*
+
+$$H_0: \mu = 0$$
+
+$$H_A: \mu > 0.$$
+
+*Run the simulation. Is there a big difference between the two tests?*
+
+```{r}
+m <- 200; n <- 10
+
+out <- replicate(m, {
+  x <- rnorm(n, mean = 1, sd = 2)
+  ttest <- t.test(x, mu = 0, alt = "greater")$p.value
+  sgntest <- 1 - pbinom(sum(x > 0) - 1, n, 1/2)
+  c(t.test = ifelse(ttest < 0.05, 1, 0),
+    sign.test = ifelse(sgntest < 0.05, 1, 0))
+})
+
+res.t <- out["t.test",]
+res.sign <- out["sign.test",]
+results <- c(t = sum(res.t)/m, sign = sum(res.sign) / m)
+results
+```
+
+There is a significant difference between the two tests. This is because the sign test shows 
+less evidence of successes (ie the median is exceeded). This is because the sign test is 
+basically a test for population proportion.
+
+# Problem 4 (Verzani problem 9.31)
+
+*For the `babies` (**UsingR**) data set, the variable `age` contains the
+recorded mom's age and `dage` contains the dad's age for several different cases
+in the sample. Do a significance test of the null hypothesis of equal ages
+against a one-sided alternative that the dads are older in the sampled
+population.*
+
+```{r, error = TRUE}
+data("babies")
+
+mom <- babies$age
+dad <- babies$dage
+
+wilcox.test(mom, dad, alternative = "greater")
+#There is not sufficient evidence to show that the dads are older in the sample population
+```
+
+# Problem 5 (Verzani problem 9.32)
+
+*The data set `normtemp` (**UsingR**) contains body measurements for 130
+healthy, randomly selected individuals from some parent population. The variable
+`temperature` contains normal body temperature data and the variable `gender`
+contains gender information, with male coded as 1 and female as 2. Is the sample
+difference across the two groups statistically significant?*
+
+```{r, error = TRUE}
+data("normtemp")
+
+temp <- normtemp$temperature
+gender <- normtemp$gender
+
+wilcox.test(temp, gender, alternative = "greater")
+#There is sufficient evidence to show a difference across the two groups
+```
+

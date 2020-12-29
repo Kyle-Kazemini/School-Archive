@@ -1,0 +1,120 @@
+---
+title: "MATH 3080 Lab Project 14"
+author: "Kyle Kazemini"
+date: "02/14/2020"
+output:
+  pdf_document:
+    toc: TRUE
+---
+
+# Problem 1 (Verzani problem 13.1)
+
+*The data set `tastesgreat` (**UsingR**) is data from a taste test for* New Goo,
+*a fictional sports-enhancement product. Perform a logistic regression to
+investigate whether the two covariates, `age` and `gender`, have a significant
+effect on the enjoyment variable, `enjoyed`.*
+
+```{r, error = TRUE}
+library(UsingR)
+data("tastesgreat")
+
+fit <- glm(enjoyed ~ age + gender, data = tastesgreat, family = binomial)
+
+fit
+summary(fit)
+#These two different summaries give information on the effect of age and gender on the 'enjoyed' variable
+```
+
+# Problem 2 (Verzani problem 13.5)
+
+*The `esoph` data set contains data from a study on esophageal cancer. The data
+records the number of patients with cancer in `ncases` and the number of
+patients in the control group with `ncontrols`. The higher the ratio of these
+two variables, the worse the cancer risk. THree factors are recorded: the age of
+the patient (`agegp`), alcohol consumption (`alcgp`), and tobacco consumption
+(`tobgp`).*
+
+*We can fit an age-adjusted model of the effects of alcohol and tobacco
+consumption with an interaction as follows:*
+
+```{r}
+res.full <- glm(cbind(ncases, ncontrols) ~ agegp + tobgp * alcgp, data = esoph,
+                family = binomial)
+```
+
+*A model without interaction is fit with*
+
+```{r}
+res.add <- glm(cbind(ncases, ncontrols) ~ agegp + tobgp + alcgp, data = esoph,
+               family = binomial)
+```
+
+*Use `AIC()` to compare the two models to determine whether an interaction term
+between alcohol and tobacco is hinted at by the data.*
+
+```{r, error = TRUE}
+AIC(res.full, res.add)
+#This AIC shows that an interaction term between alcohol and tobacco is hinted at by the data
+```
+
+# Problem 3 (Verzani problem 13.8)
+
+*The data set `wtloss` (**MASS**) contains weight measurements of an obese
+patient recorded during a weight-rehabilitation program. The variable `Weight`
+records the patient's weight in kilograms, and the variable `Days` records the
+number of days since the start of the program. A linear model is not a good
+model for the data, as it becomes increasingly harder to lose the same amount of
+weight each week. A more realistic goal is to lose a certain percentage of
+weight each week. Fit the nonlinear model*
+
+$$\text{Weight} = a + b 2^{-\text{Days}/c}.$$
+
+*The estimated value of $c$ would be the time it takes to lose $b$ times half
+the excess weight.*
+
+*What is the estimated weight for the patient if he stays on this program for
+the long run? Suppose the model held for 365 days. How much would the patient be
+expected to weigh?*
+
+```{r, error = TRUE}
+library(MASS)
+data("wtloss")
+
+doubexpfunc <- function(t, C0, a1, a2, b1, b2) {
+  C0 + a1 * exp(-b1 * t) + a2 * exp(-b2 * t)
+}
+
+fit <- glm(wtloss$Weight ~ wtloss$Days, data = wtloss)
+fit
+
+predict.glm(fit, Days = 365)
+#Prediction values for 365 days
+```
+
+# Problem 4 (Verzani problem 13.9)
+
+*The `reddrum` (**UsingR**) data set contains length-at-age data for the red
+drum fish. Try to fit both the models*
+
+$$l = b_0\left(1 - e^{-k(t - t_0)}\right)$$
+
+*and*
+
+$$l = (b_0 + b_1 t) \left(1 - e^{-k(t - t_0)}\right).$$
+
+*(These are the von Bertalanffy and "linear" von Bertalanffy curves.) Use the
+AIC to determine which is preferred.*
+
+*Good starting values for the "linear" curve are 32, 1/4, 1/2, and 0.*
+
+```{r, error = TRUE}
+data("reddrum")
+
+fit1 <- glm(length ~ age, data = reddrum)
+
+fit2 <- glm(I(length) ~ age, data = reddrum)
+
+AIC(fit1, fit2)
+#This AIC shows that the nonlinear von Bertalanffy curve is the better model
+```
+

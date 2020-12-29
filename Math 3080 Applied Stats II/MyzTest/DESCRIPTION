@@ -1,0 +1,14 @@
+Package: MyzTest
+Type: Package
+Title: Performs a z-test
+Version: 0.1.0
+Author: Kyle Kazemini
+Maintainer: Kyle Kazemini <u1127157@utah.edu>
+Description: This package has a function that performs a z-test
+    using data, standard deviation, mean, an alternative hypothesis, and a confidence level. 
+License: CCO
+Encoding: UTF-8
+LazyData: true
+Suggests: knitr
+VignetteBuilder: knitr
+RoxygenNote: 7.0.2
