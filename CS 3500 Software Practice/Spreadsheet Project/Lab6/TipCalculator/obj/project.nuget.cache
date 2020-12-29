@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "dfB3gLXhHqBDOqBiXEFJqR7Vd2z1pBZl8ZAWqV9D1QyuZqtu6nFQ4rT5BNg2lefQIy4nQo7BnyGJolUoYsHWxg==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\Kyle\\source\\repos\\uofu-cs3500-fall20\\ps6-brogrammers\\Lab6\\TipCalculator\\TipCalculator.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Kyle\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\3.1.10\\microsoft.aspnetcore.app.ref.3.1.10.nupkg.sha512",
+    "C:\\Users\\Kyle\\.nuget\\packages\\microsoft.netcore.app.host.win-x64\\3.1.10\\microsoft.netcore.app.host.win-x64.3.1.10.nupkg.sha512"
+  ],
+  "logs": []
+}
