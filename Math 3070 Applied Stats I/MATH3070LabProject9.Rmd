@@ -1,0 +1,65 @@
+---
+title: "MATH 3070 Lab Project 9"
+author: "Kyle Kazemini"
+date: "October 24, 2019"
+output:
+  html_document:
+    toc: TRUE
+---
+
+*Remember: I expect to see commentary either in the text, in the code with comments created using `#`, or (preferably) both! **Failing to do so may result in lost points!***
+
+## Problem 1
+*The `state.x77` data set contains various information for each of the fifty United States. We wish to explore possible relationships among the variables. First, we make the data set easier to work with by turning it into a data frame.*
+
+```{r}
+x77 <- data.frame(state.x77)
+```
+
+*Now, make scatter plots of `Population` and `Frost`; `Population` and `Murder`; `Population` and `Area`; and `Income` and `HS.Grad`. Do any relationships appear linear? Are there any surprising correlations?*
+
+```{r, tidy=TRUE}
+plot(Frost ~ Population, data = x77) #These lines create scatter plots with the desired variables
+plot(Murder ~ Population, data = x77)
+plot(Area ~ Population, data = x77)
+plot(Income ~ HS.Grad, data = x77)
+#The most noteable relationship is between income and hs.grad
+#This relationship is fairly linear
+#The others appear to have little, if any, correlation
+```
+
+## Problem 2
+*The `batting` (**UsingR**) data set contains baseball statistics for the 2002 Major League Baseball season. What is the correlation between the number of strikeouts (`SO`) and the number of home runs (`HR`)? Make a scatter plot to see whether there is any trend and add a trendline. Does the data suggest that in order to hit a lot of home runs one should strike out a lot?*
+
+```{r, tidy=TRUE}
+library(UsingR)
+data("batting")
+plot(HR ~ SO, data = batting) #Creates plot of HR and SO
+hs_fit <- lm(HR ~ SO, data = batting) #Creates variable for line of best fit
+coefficients(hs_fit)
+abline(hs_fit) #Creates line
+#The data loosely suggests that in order to hit more home runs, one should strike out a lot
+#There is some correlation, but also many outliers
+```
+
+## Problem 3
+*The data set `UScereal` (**MASS**) contains information about cereals on a shelf of a United States grocery store. Make a table showing the relationship between manufacturer, `mfr`, and shelf placement, `shelf`. Are there any obvious differences between manufacturers?*
+
+```{r, tidy=TRUE}
+library(MASS)
+data("UScereal")
+tab1 <- xtabs(~mfr + shelf, data = UScereal) #Creates table
+tab1 #Displays table
+#Manufacturers G and K seem to have higher values for each shelf than manufacturers such as N and Q
+```
+
+## Problem 4
+*The help page for `mosaicplot()` demonstrates the data set `HairEyeColor`, which records `sex`, `Hair` color, and `Eye` color for 592 statistics students. The data set comes as a flattened table, so simply passing the object to `mosaicplot()` will create the plot (in a colored version.)*
+*Make the plot. Why does the help page note, "there are more blue-eyed, blonde females than expected?"*
+
+```{r, tidy=TRUE}
+help("mosaicplot")
+mosaicplot(HairEyeColor, shade = TRUE) #Creates the mosaic plot
+#The help page notes that there are more blue-eyed, blonde females than expected because
+#of the case of independence. They're comparing that case with brown-eyed blonde females
+```

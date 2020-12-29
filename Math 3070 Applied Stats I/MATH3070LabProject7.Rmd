@@ -1,0 +1,87 @@
+---
+title: "MATH 3070 Lab Project 7"
+author: "Kyle Kazemini"
+date: "October 3, 2019"
+output:
+  html_document:
+    toc: TRUE
+---
+
+*Remember: I expect to see commentary either in the text, in the code with comments created using `#`, or (preferably) both! **Failing to do so may result in lost points!***
+
+## Problem 1
+*For the `batting` (**UsingR**) data set, make parallel boxplots of the batting average (`H/AB`) for each team. Which team had the greatest median average? (Use **lattice** functions for this problem.)*
+
+```{r, tidy=TRUE, error=TRUE}
+library(UsingR)
+data("batting")
+str(batting) #Displays structure
+library(lattice) #Loads library
+bwplot(teamID ~ H/AB, data= batting) #creates lattice plot for each team
+#The team with the greatest median average is ANA
+```
+
+## Problem 2
+*For the `mtcars` data set, produce graphics of the following using **ggplot2**:*
+
+1. *Boxplots for miles per gallon (`mpg`) for groups defined by the number of gears (`gear`).*
+
+```{r, tidy=TRUE, error=TRUE}
+data("mtcars")
+str(mtcars)
+library(ggplot2)
+q <- ggplot(mtcars, aes(y= mpg, x= gear, group = gear)) + #Creates plots for each gear
+  xlab("Gear") +
+  ylab("MPG") + #Names
+  ggtitle("Number of gears vs MPG")
+q + geom_boxplot() #Creates boxplots
+```
+
+3. *A scatterplot of `mpg` modeled by horsepower (`hp`). Create facets by the number of cylinders (`cyl`) and `gear`.*
+
+```{r, tidy=TRUE, error=TRUE}
+str(mtcars) #Displays structure
+q <- ggplot(mtcars, aes(y= mpg, x= hp)) + #Creates plot
+  xlab("HP") +
+  ylab("MPG") + #Names
+  ggtitle("HP vs MPG") +
+  facet_grid(.~ cyl) + #Facet for cylinders
+  facet_grid(.~ gear) #Facet for gears
+q + geom_point() #Creates scatterplot
+```
+
+## Problem 3
+*Using the `batting` data set (UsingR), create a visualization that does the following:*
+
+* *Plots the* rate *of intentional walks (that is, the number of intentional walks divided by the number of times a player was at bat; these are the `IBB` and `AB` variables in the data set, respectively) against the* rate *of home runs (the `HR` variable in the data set) as a scatterplot*
+
+* *Draws a trend line for these variables*
+
+* *Identifies the outlier in the data set in these variables (spotted once the scatter plot is drawn)*
+
+
+```{r, tidy = TRUE, error=TRUE}
+str(batting) #Displays structure
+q <- ggplot(batting, aes(x = (batting$IBB/batting$AB), y = (batting$HR/batting$AB))) +
+     xlab("Rate of intentional walks") +
+     ylab("Rate of home runs") +
+     stat_smooth(method = "lm") #Creates line of best fit
+q + geom_point() #Creates scatterplot of the two rates
+#Outliers are identified by looking at the scatterplot (one around .17 and .12)
+```
+
+## BONUS Problem
+*Reconsider the data set from a previous project containing data about the results of 2012 Olympics. I load the data in for you below:*
+
+```{r}
+# setwd("C:/Users/Deicy/Dropbox/Utah/MATH 3070 Fall 2018 - DJ/Lecture_7") #you will need to change to working directory to your own computer.
+# olympic2012 <- read.csv("olympic-medals2012.csv")
+# Some variables are read in as strings when, in truth, they are numeric (they separate thousands with commas, leading to them being read as strings). I fix this below using the transform function, which allows for modifying columns in a data frame using methods similar to with.
+# olympic2012 <- transform(olympic2012, GDP.2011 = as.numeric(gsub(",", "", GDP.2011)), pop.2010 = as.numeric(gsub(",", "", pop.2010)))
+```
+
+*Use any plotting system (base R, **lattice**, **ggplot2**) to create plot involving at least three variables in the `olympic2012` data set. Explain the relationship you explored and any interesting findings. **Bonus points will be given for plots that I consider clean, clear, and insightful, accompanied with good analyses of what you found.***
+
+```{r, tidy=TRUE, error=TRUE}
+# Your code here
+```

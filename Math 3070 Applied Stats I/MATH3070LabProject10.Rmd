@@ -1,0 +1,97 @@
+---
+title: "MATH 3070 Lab Project 10"
+author: "Kyle Kazemini"
+date: "October 31, 2019"
+output:
+  html_document:
+    toc: TRUE
+---
+
+*Remember: I expect to see commentary either in the text, in the code with comments created using `#`, or (preferably) both! **Failing to do so may result in lost points!***
+
+*Since this assignment involves simulation, I set the seed to the following in order to get the same results:*
+
+```{r}
+set.seed(5292016)
+```
+
+## Problem 1
+*Roll a pair of dice. Let $X$ be the largest value shown on the two dice. Use `sample()` to simulate five values of $X$.*
+
+```{r, echo=FALSE}
+# This code block resets the random seed in order to get consistent results. This will be hidden in the final document, but YOU MUST NOT CHANGE THIS!
+set.seed(5292016)
+```
+
+```{r, error=TRUE, tidy=TRUE}
+sample(rep(c="$X$",6), 5) #Generates random numbers between 1 and 6 for $X$
+```
+
+## Problem 2
+*The National Basketball Association lottery to award the first pick in the draft is held by putting 1,000 balls into a hopper and selecting one. The teams with the worst records the previous year have a greater proportion of the balls. The data set `nba.draft` (**UsingR**) contains the ball allocation for the year 2002. Use `sample()` with Team as the data vector and `prob=Balls` to simulate the draft. What team do you select? Repeat until Golden State is chosen. How long did it take?*
+
+```{r, echo=FALSE}
+# This code block resets the random seed in order to get consistent results. This will be hidden in the final document, but YOU MUST NOT CHANGE THIS!
+set.seed(5292016)
+```
+
+```{r, error=TRUE, tidy=TRUE}
+library(UsingR)
+data(nba.draft)
+sample(rep(nba.draft$Team, prob = nba.draft$Balls ,size = 1))
+#The team I selected was the Phoenix Suns
+#It took 7 tries to get Golden State
+```
+
+## Problem 3
+*Find the quintiles ($0^{\text{th}}$, $20^{\text{th}}$, $40^{\text{th}}$, $60^{\text{th}}$, $80^{\text{th}}$, and $100^{\text{th}}$ quantiles/percentiles) of the standard Normal distribution (this is a normal distribution with mean 0 and standard deviation 1).*
+
+```{r, error=TRUE, tidy=TRUE}
+qnorm(seq(0, 1, by = 0.2), mean = 0, sd = 1)
+#Displays the value for each quantile (split into fifths) for the standard normal distribution
+```
+
+## Problem 4
+*Consider flipping a fair coin $n$ times and counting the number of time the coin lands heads-up. This is a binomial random variable, but it turns out that as $n$ gets large, this distribution can be approximated with a Normal distribution, where the mean is $0.5 \times n$ and the standard deviation is $0.5 \times \sqrt{n}$. We know this thanks to the central limit theorem. When flipping 3, 5, and 20 times, plot the pmf of the binomial random variable with the appropriate parameters (you may use my function `plot_pmf()` from the lecture notes). Superimpose on each of these plots the density curve of the Normal distribution with the appropriate parameters (use the `lines()` function to do so; an example for doing this is in the lecture notes). What do you notice? When does the approximation appear best?*
+
+```{r, error=TRUE, tidy=TRUE}
+plot_pmf <- function(q, p) {
+    # This will plot a series of horizontal lines at q with height p, setting
+    # the y limits to a reasonable heights
+    plot(q, p, type = "h", xlab = "x", ylab = "probability", main = "pmf", ylim = c(0, 
+        max(p) + 0.1))
+    # Usually these plots have a dot at the end of the line; the point function
+    # will add these dots to the plot created above
+    points(q, p, pch = 16, cex = 2)
+}
+
+```
+
+
+
+```{r, error=TRUE, tidy=TRUE}
+#Uses the plot_pmf function to create graphs for the specified n values
+#Creates graph, lines, and dots for n=3
+binom_q <- 0:3
+binom_pmf <- dbinom(binom_q, size = 3, 0.5)
+norm_q <- seq(0,3, length = 100)
+norm_pdf <- dnorm(norm_q, mean = 0.5*3, sd = 0.5*sqrt(3))
+plot_pmf(binom_q, binom_pmf)
+lines(norm_q,norm_pdf)
+      
+#Creates graph, lines, and dots for n=5
+binom_q2 <- 0:5
+binom_pmf2 <- dbinom(binom_q2, size = 5, 0.5)
+norm_q2 <- seq(0,5, length = 100)
+norm_pdf2 <- dnorm(norm_q2, mean = 0.5*5, sd = 0.5*sqrt(5))
+plot_pmf(binom_q2, binom_pmf2)
+lines(norm_q2,norm_pdf2)
+
+#Creates graph, lines, and dots for n=20
+binom_q3 <- 0:20
+binom_pmf3 <- dbinom(binom_q3, size = 20, 0.5)
+norm_q3 <- seq(0,20, length = 100)
+norm_pdf3 <- dnorm(norm_q3, mean = 0.5*20, sd = 0.5*sqrt(20))
+plot_pmf(binom_q3, binom_pmf3)
+lines(norm_q3,norm_pdf3)
+```

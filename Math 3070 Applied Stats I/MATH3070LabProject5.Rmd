@@ -1,0 +1,86 @@
+---
+title: "MATH 3070 Lab Project 5"
+author: "Kyle Kazemini"
+date: "September 19, 2019"
+output:
+  html_document:
+    toc: TRUE
+---
+
+*Remember: I expect to see commentary either in the text, in the code with comments created using `#`, or (preferably) both! **Failing to do so may result in lost points!***
+
+
+## Problem 1
+*Use the `subset()` function to return a data frame made from the `Cars93` (**MASS**) data frame consisting only of `non-USA` cars in origin, with 4 cylinders and a maximum price of \$15 or less.*
+
+```{r, tidy=TRUE,error=TRUE}
+library(MASS)
+str(Cars93) #Shows structure of Cars93
+subset(Cars93, subset = Cars93$Origin == "non-USA" && Cars93$EngineSize == 4 && Cars93$Max.Price <= 15)
+#Creates subset with specified conditions
+```
+
+## Problem 2
+*Find the standard deviation of each variable in the `mtcars` data set.*
+
+```{r, tidy=TRUE, error=TRUE}
+data("mtcars")
+ #Square root of variance is standard deviation
+sqrt(var(mtcars$mpg)) #Calculates standard deviation of mpg variable
+sqrt(var(mtcars$cyl)) #Same calculation for the rest of the variables in the data set
+sqrt(var(mtcars$disp))
+sqrt(var(mtcars$hp))
+sqrt(var(mtcars$drat))
+sqrt(var(mtcars$wt))
+sqrt(var(mtcars$qsec))
+sqrt(var(mtcars$vs))
+sqrt(var(mtcars$am))
+sqrt(var(mtcars$gear))
+sqrt(var(mtcars$carb))
+```
+
+## Problem 3
+*Find the standard deviation for each numeric variable in `Cars93` (**MASS**).*
+
+```{r, tidy=TRUE, error=TRUE}
+#The variables in the calculations exclude non-numeric variables
+str(Cars93) #This helps us determine which variables we want to use
+sqrt(var(Cars93$Min.Price)) #Calculates standard deviation of the price variable
+sqrt(var(Cars93$Price)) #Same calculation for the remaining numeric variables in Cars93
+sqrt(var(Cars93$Max.Price))
+sqrt(var(Cars93$MPG.city))
+sqrt(var(Cars93$MPG.highway))
+sqrt(var(Cars93$EngineSize))
+sqrt(var(Cars93$Horsepower))
+sqrt(var(Cars93$RPM))
+sqrt(var(Cars93$Rev.per.mile))
+sqrt(var(Cars93$Fuel.tank.capacity))
+sqrt(var(Cars93$Passengers))
+sqrt(var(Cars93$Length))
+sqrt(var(Cars93$Wheelbase))
+sqrt(var(Cars93$Width))
+sqrt(var(Cars93$Turn.circle))
+sqrt(var(Cars93$Rear.seat.room))
+sqrt(var(Cars93$Luggage.room))
+sqrt(var(Cars93$Weight))
+```
+
+## Problem 4
+*You can find data describing various statistics on 2012 Olympic participating nations such as population and medal counts in the comma-separated value file (olympic-medals2012.csv). Load this dataset into R in a data frame and do the following:*
+
+1. *Create a new data frame containing only the country's ISO code (a three-letter code for the country; USA is the United States of America, and DZA Algeria), name, population, and counts for gold, silver, and bronze. This data frame should be called `olympic2012`.*
+
+```{r, tidy=TRUE, error=TRUE}
+setwd("/Users/kylekazemini/Downloads")
+olympic2012 <- read.csv("olympic-medals2012.csv") #The first two lines load the file into R
+subset(olympic2012, subset = ISO == "USA" | ISO == "DZA", select = c("Country.name","pop.2010","Gold","Silver","Bronze")) #Creates subset with specified conditions
+```
+
+2. *What proportion of countries earned no medals? Answer this using `olympic2012`.*
+
+```{r, tidy=TRUE, error=TRUE}
+#Finds number with zero medals and divides it by total number of countries
+length(which(olympic2012$Total.medal.score..gold.3..silver..2..bronze.1. == 0))/
+length(olympic2012$Total.medal.score..gold.3..silver..2..bronze.1.)
+```
+

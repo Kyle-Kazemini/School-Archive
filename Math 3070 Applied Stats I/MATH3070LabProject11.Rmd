@@ -1,0 +1,99 @@
+---
+title: "MATH 3070 Lab Project 11"
+author: "Kyle Kazemini"
+date: "November 7, 2019"
+output:
+  html_document:
+    toc: TRUE
+---
+
+*Remember: I expect to see commentary either in the text, in the code with comments created using `#`, or (preferably) both! **Failing to do so may result in lost points!***
+
+*Because randomization is used in this assignment, I set the seed here, in addition to beginning each code block. **Do not change the seed!***
+
+```{r}
+set.seed(6222016)
+```
+
+## Problem 1 (Verzani problem 7.1)
+*Simulate 1000 rolls of a pair of dice, and compute the sum of each pair. Which is more common, a roll of 7 or 8?*
+
+```{r, echo=FALSE}
+# Seed reset; DO NOT CHANGE THE SEED!
+set.seed(6222016)
+```
+
+```{r, tidy=TRUE}
+sample(1:6, size = 1000, replace = TRUE) + sample(1:6, size = 1000, replace = TRUE)
+#Randomly generate sums for the dice rolls 1000 times
+length(which(sample(1:6, size = 1000, replace = TRUE) + sample(1:6, size = 1000, replace = TRUE) == 7))
+#Uses length function to show how many times a 7 is rolled
+length(which(sample(1:6, size = 1000, replace = TRUE) + sample(1:6, size = 1000, replace = TRUE) == 8))
+#Uses length function to show how many times an 8 is rolled
+#It appears that a roll of 7 is more common than a roll of 8
+```
+
+## Problem 2 (Verzani problem 7.2)
+*For the `rivers` data set, take 1000 random samples of size 10. Compare the mean of the sample means computed from these samples, with the sample mean of the data in `rivers`.*
+
+```{r, echo=FALSE}
+# Seed reset; DO NOT CHANGE THE SEED!
+set.seed(6222016)
+```
+
+```{r, tidy=TRUE}
+data("rivers")
+sim_riv <- replicate(1000, mean(sample(rivers, size = 10)))
+#sim_riv is our 1000 samples
+#sim_riv
+#Comment this line out to avoid a lot of numbers
+mean(rivers) 
+#Displays mean
+mean(sim_riv) - mean(rivers)
+#Displays difference between the two means
+```
+
+## Problem 3
+*The data set `Melanoma` (**MASS**) includes data for 205 Danish patients with malignant melanoma. The variable `time` describes survival time in days, and `sex` describes the sex of the patient. Does survival time differ between the sexes?*
+
+1. *Find $\bar{x}_{\text{men}} - \bar{x}_{\text{women}}$, the mean difference in survival time (`time`) between men and women (`sex`) in `Melanoma`.*
+
+```{r, tidy = TRUE}
+library(MASS)
+data("Melanoma")
+male <- subset(Melanoma$time, Melanoma$sex == 0)
+#male contains the subset of times for males
+length(male)
+female <- subset(Melanoma$time, Melanoma$sex == 1)
+#female contains the subset of times for females
+mean(male)
+mean(female)
+#Displays the two means
+mean(mean(male) - mean(female))
+#Displays the mean difference between the two
+```
+
+2. *Investigate whether the difference you observed in part 1 is significant, using procedures explored in the lecture. There are two groups in this investigation: male (`Melanoma$sex == 0`) and female (`Melanoma$sex == 1`). Randomly reassign the data in the `time` variable to the two groups, and compute the mean difference. Repeat 2000 times, and determine how frequently the difference in the mean survival time between men and women (that is, $\bar{x}_{\text{men}} - \bar{x}_{\text{women}}$ in the simulated data is less than the same difference observed in the actual data. Does this analysis suggest the difference is due to "noise", or due to an actual difference in survival time between men and women?*
+
+```{r, echo=FALSE}
+# Seed reset; DO NOT CHANGE THE SEED!
+set.seed(6222016)
+```
+
+```{r, tidy=TRUE}
+male <- subset(Melanoma$time, Melanoma$sex == 0)
+female <- subset(Melanoma$time, Melanoma$sex == 1)
+diff1 <-mean(male) - mean(female)
+#Difference between the averages
+ind <- sample(1:205, size = 126)
+with(Melanoma, mean(Melanoma$time[ind]) - mean(Melanoma$time[-ind]))
+
+sim_diffs <- replicate(2000, {
+    ind <- sample(1:205, size = 126)
+    with(Melanoma, mean(Melanoma$time[ind]) - mean(Melanoma$time[-ind]))
+})
+#This is the simulated difference that the problem asks for
+1-mean(sim_diffs < diff1)
+#This compares the real difference in averages to the simulated difference
+#This comparison results in a very small percentage, so the difference could be due to "noise"
+```

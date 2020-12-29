@@ -1,0 +1,70 @@
+---
+title: "MATH 3070 Lab Project 2"
+author: "Kyle Kazemini"
+date: "08/29/2019"
+output:
+  html_document:
+    toc: TRUE
+---
+
+*Remember: I expect to see commentary either in the text, in the code with comments created using `#`, or (preferably) both! **Failing to do so may result in lost points!***
+
+## Problem 1
+*The `exec.pay` (**UsingR**) data set is available after loading the package **UsingR**. Load the package, and inspect the data set. Scan the values to find the largest one.*
+
+```{r}
+library(UsingR) #loads library
+data("exec.pay") #loads data set
+max(exec.pay, na.rm=TRUE) #finds max value in data set
+```
+
+## Problem 2
+*Create the following sequences, using `:`, `seq()`, or `rep()` as appropriate:*
+
+1. `"a" "a" "a" "a" "a" `
+
+```{r}
+rep("a",times=5) #repeat "a" 5 times
+```
+
+2. `1 3 ... 99` *(the odd numbers)*
+
+```{r}
+seq(1,99,2) #sequence from 1 to 99 skipping evens
+```
+
+3. `1 1 1 2 2 2 3 3 3`
+
+```{r}
+rep(c(1, 2, 3), each=3) #repeats the numbers three times each
+```
+
+## Problem 3
+*Let our small data set be* `2 5 4 10 8`.
+
+1. *Enter this data into a data vector `x`.*
+
+```{r}
+x <- c(2,5,4,10,8) #vector x with values of the data set
+```
+
+2. *Find the square of each number.*
+
+```{r}
+x2 <- x^2 #sets x2 to x^2
+x2 #displays result
+```
+
+3. *Subtract 6 from each number.*
+
+```{r}
+x3 <- x-6 #subtracts 6
+x3 #displays result
+```
+
+4. *Subtract 9 from each number and then square the answer.*
+
+```{r}
+x4 <- (x-9)^2 #makes calculation
+x4 #displays result
+```

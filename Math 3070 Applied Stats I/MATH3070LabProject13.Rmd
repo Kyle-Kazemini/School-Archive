@@ -1,0 +1,64 @@
+---
+title: "MATH 3070 Lab Project 13"
+author: "Kyle Kazemini"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output:
+  html_document:
+    toc: TRUE
+---
+
+*Remember: I expect to see commentary either in the text, in the code with comments created using `#`, or (preferably) both! **Failing to do so may result in lost points!***
+
+## Problem 1
+*The data set `normtemp` (**UsingR**) contains measurements of 130 healthy, randomly selected individuals. The variable `temperature` contains normal body temperature. Does the data appear to come from a Normal distribution? If so, perform a $t$-test to see if the commonly assumed value of 98.6 degrees fahrenheit is correct. (Studies have suggested that 98.2 degrees fahrenheit is more accurate.)*
+
+```{r, tidy = TRUE}
+library(UsingR)
+data("normtemp")
+str(normtemp)
+#Data appears normally distributed, so it's okay to use t.test
+t.test(normtemp$temperature, mu = 98.6)
+#This t.test shows that for this data, 98.2 is more accurate than 98.6 (with 95 percent confidence)
+```
+
+## Problem 2
+*In the United States in 2007, the proportion of adults age 21-24 who had no medical insurance was 28.1 percent. A survey of 75 recent college graduates in this age range finds that 40 percent are without insurance. Does this support a difference from the nationwide proportion? Perform a test of significance and report the p-value. Is it significant? (Perform this test "by hand", not using `prop.test()`.)*
+
+```{r, tidy = TRUE}
+#Values needed to calculate z
+p_hat <- 0.4
+n <- 75
+p_0 <- .281
+#Calculate and display z
+z <- (p_hat - p_0)/(sqrt((p_0*(1-p_0))/n))
+z
+#Use z to find the p value
+pval <- 2 * (1 - pnorm(abs(z)))
+#Display the p value
+pval
+```
+
+## Problem 3
+*A one-sided, one-sample $t$-test will be performed. What sample size is needed to have a power of 0.80 for a significance level of 0.05 if `delta = 0.05` and the population standard deviation is assumed to be 5?*
+
+```{r, tidy = TRUE}
+power.t.test(power = 0.8, delta = 0.05, sd = 5, sig.level = 0.05, type = "paired", 
+    alternative = "one.sided")
+#This power.t.test finds the value for n for a power value of 0.8
+#The other numbers used are given in the question
+#n = 61826.93
+```
+
+## Problem 4
+*For the `babies` (**UsingR**) data set, the variable `age` contains the recorded mom's age and `dage` contains the dad's age for several cases in the sample. Do a significance test of the null hypothesis of equal ages against a one-sided alternative that the dads are older in the sampled population.*
+
+```{r, tidy = TRUE}
+library(UsingR)
+data("babies")
+#Store mom and dad age into variables
+mom <- babies$age
+dad <- babies$dage
+#Use t.test for the significance test
+#alternative is less because mom is first, and paired is true because the two are not independent
+t.test(mom, dad, paired = TRUE, alternative = "less")
+```

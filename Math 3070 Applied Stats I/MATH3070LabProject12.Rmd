@@ -1,0 +1,68 @@
+---
+title: "MATH 3070 Lab Project 12"
+author: "Kyle Kazemini"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output:
+  html_document:
+    toc: TRUE
+---
+
+*Remember: I expect to see commentary either in the text, in the code with comments created using `#`, or (preferably) both! **Failing to do so may result in lost points!***
+
+## Problem 1
+*Of the last ten times you've dropped your toast, it landed sticky-side down nine times. If these are a random sample from the $\text{Ber}(p)$ distribution, find an 80% confidence interval for $p$, the probability of the stidy side landing down. (Use `binconf()` (**Hmisc**) to compute the score interval.)*
+
+```{r, tidy = TRUE}
+library(Hmisc)
+binconf(9, 10, alpha = 0.8) #binconf function with specified values
+ci <- c(Lower = 0.8733557, Upper = 0.8390562) #Puts values into a vector
+ci #Displays values
+```
+
+## Problem 2
+*A survey is taken of 250 students, and a $\hat{p}$ of 0.45 is found. The same survey is repeated with 1000 students, and the same $\hat{p}$ is found. Compare the two 95% confidence intervals. What is the relationship? Is the margin of error for the second one four times smaller? If not, how much smaller is it? (Use `binom.test()` to answer this problem.)*
+
+```{r, tidy = TRUE}
+tt1 <- binom.test(112, 250, conf.level = .95) #Creates binom test for the given values
+tt2 <- binom.test(450, 1000, conf.level = .95)
+marg1 = 0.5119484 - 0.3852992 #Margin of errors taken from the confidence intervals in the test
+marg2 = 0.4814435 - 0.4188517
+tt1 #Displays all of the values we've calculated
+tt2
+marg1
+marg2
+#The margin of error for the second is not four times smaller, even though the sample was four times larger
+#The margin of error is about twice as small for the second test
+```
+
+## Problem 3
+*The `stud.recs` (**UsingR**) data set contains a sample of math SAT scores from some population in the variable `sat.m`. Find a 90% confidence interval for the mean math SAT score for this data. (Do not use `t.test(); find this confidence interval "by hand".)*
+
+```{r, tidy = TRUE}
+library(UsingR)
+data("stud.recs")
+xbar <- mean(stud.recs$sat.m) #Creates mean value we need
+zstar <- qnorm(0.02, lower.tail = FALSE)
+sigma <- 0.5
+moe <- zstar * sigma/sqrt(length(stud.recs$sat.m)) #All the values we need are now stored into variables
+ci <- c(Lower = xbar - moe, Upper = xbar + moe) #Stores our interval in a vector
+ci #Displays interval
+```
+
+## Problem 4
+*For the `homedata` (**UsingR**) data set find 90% confidence intervals for both variables `y1970` and `y2000`, assuming the sample represents some population. Perform one sample t-test for each variable, use `t.test()`, but first discuss whether the model assumptions are appropriate (include some check of the assumptions, like a Q-Q plot).*
+
+```{r, tidy = TRUE}
+library(UsingR)
+data("homedata")
+first <- homedata$y1970 #First variable we want
+second <- homedata$y2000 #Second variable we want
+qqnorm(first) #Creates plot for both of our values in order to model assumptions
+qqline(first)
+qqnorm(second) #The assumptions are appropriate based on the information in these plots
+qqline(second)
+tt1 <- t.test(first, conf.level = 0.9) #T test for first variable
+tt2 <- t.test(second, conf.level = 0.9) #T test for second variable
+tt1 #Displays values for both tests
+tt2
+```

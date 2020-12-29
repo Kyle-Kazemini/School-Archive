@@ -1,0 +1,56 @@
+---
+title: "MATH 3070 Lab Project 1"
+author: "Kyle Kazemini"
+date: "August 23, 2018"
+output:
+  html_document:
+    toc: TRUE
+---
+
+*Remember: I expect to see commentary either in the text, in the code with comments created using `#`, or (preferably) both! **Failing to do so may result in lost points!***
+
+## Problem 1
+*Use R as you would a calculator to find numeric answers to the following:*
+
+1. $-1 + 2(3 + 4)$
+
+```{r}
+# simple computation
+-1 + 2*(3+4)
+
+```
+
+2. $4^3 + 2^{2 + 3}$
+
+```{r}
+# simple computation
+4^3 +2^(2+3)
+
+```
+
+
+## Problem 2
+*Use R to compute the following:*
+$$\frac{0.25 - 0.2}{\sqrt{0.2(1-0.2)/100}}$$
+
+```{r}
+# simple computation
+(0.25-0.2)/sqrt(0.2*(1-0.2)/100)
+```
+
+## Problem 3
+*Assign the numbers 1 through 6 to different variables, then use the variables to multiply all the values.*
+
+```{r}
+# initializing variables
+var1 = 1
+var2 = 2
+var3 = 3
+var4 = 4
+var5 = 5
+var6 = 6
+
+# calculating var6 factorial
+var1*var2*var3*var4*var5*var6
+```
+

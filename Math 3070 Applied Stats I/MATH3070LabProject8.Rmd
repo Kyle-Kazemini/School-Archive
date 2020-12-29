@@ -1,0 +1,74 @@
+---
+title: "MATH 3070 Lab Project 8"
+author: "Kyle Kazemini"
+date: "October 17, 2019"
+output:
+  html_document:
+    toc: yes
+  pdf_document:
+    toc: yes
+---
+
+*Remember: I expect to see commentary either in the text, in the code with comments created using `#`, or (preferably) both! **Failing to do so may result in lost points!***
+
+## Problem 1
+*For the `michelson` (**MASS**) data set, produce a density plot comparing `Speed` between Experiments 1 and 2.*
+
+```{r, tidy=TRUE, error=TRUE}
+library(MASS)
+data("michelson")
+str(michelson)
+Speed_split <- with(michelson, split(Speed, Expt)) #Creates a list with the variables we want
+Expt1 <- Speed_split$`1` #For experiment 1
+Expt2 <- Speed_split$`2` #For experiment 2
+plot(density(Expt1), lty = 1) #Creates density plot of the two lines
+lines(density(Expt2), lty = 2)
+```
+
+## Problem 2
+*Three students record the time spent on homework per class. Their data is:*
+
+| Student| 1  | 2  | 3  | 4  | 5 |
+|:-------|---:|---:|---:|---:|--:|
+| Marsha | 25 | 0  | 45 | 90 | 0 |
+| Bill   | 30 | 30 | 30 | 30 |   |
+| Holly  | 15 | 0  | 90 | 0  |   |
+
+*Use a list to store these values. Then create a boxplot to compare.*
+
+```{r, tidy=TRUE, error=TRUE}
+list.student <- list(Marsha = c(25,0,45,90,0), Bill = c(30,30,30,30), Holly = c(15,0,90,0))
+#Creates a list with three names and the specified values for each
+list.student #Displays list
+boxplot(list.student) #Creates boxplot for list
+```
+
+## Problem 3
+*A group of nursing students take turns measuring some basic assessments. Their data is:*
+
+|          | Temp | Pulse | Systolic | Diastolic |
+|----------|------|-------|----------|-----------|
+| Jackie   | 98.2 | 96    |  134     | 90        |
+| Florence | 98.6 | 56    |  120     | 80        |
+| Mildred  | 98.2 | 76    |  150     | 95        |
+
+*Create a data frame of these values. Will `plot()` and `boxplot()` produce the same graphic?*
+
+```{r, tidy=TRUE, error=TRUE}
+df <- data.frame(Temp = c(98.2,98.6,98.2), Pulse = c(96,56,76), Systolic = c(134,120,150), Diastolic = c(90,80,95))
+#Creates data frame with the given columns
+rownames(df) <- c("Jackie","Florence", "Mildred") #Names the rows of the dataframe
+df #Displays dataframe
+plot(df) #Creates plot
+boxplot(df) #Creates boxplot
+#Plot and boxplot produce different graphics because of the structure and continuity in the data
+```
+
+## Problem 4
+*The second argument to `split` can be a list of factors. The result is that all interactions (possible combinations) are used for the groups. In the `ToothGrowth` data set, growth (`len`) is measured for two types of supplements (`supp`) and three doses (`dose`). Split this `len` value into 6 groups.*
+
+```{r, tidy=TRUE, error=TRUE}
+data("ToothGrowth")
+l1 <- split(ToothGrowth$len, list(ToothGrowth$dose, ToothGrowth$supp)) #Splits len into 6 groups
+l1 #Displays l1
+```

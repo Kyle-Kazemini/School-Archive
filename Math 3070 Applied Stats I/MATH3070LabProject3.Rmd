@@ -1,0 +1,71 @@
+---
+title: "MATH 3070 Lab Project 3"
+author: "Kyle Kazemini"
+date: "September 5, 2019"
+output:
+  html_document:
+    toc: TRUE
+---
+*Remember: I expect to see commentary either in the text, in the code with comments created using `#`, or (preferably) both! **Failing to do so may result in lost points!***
+
+## Problem 1
+*The `faithful` (Package **datasets** is built in Base R) dataset records the waiting time between eruptions and the duration of the eruption for the Old Faithful geyser in Yellowstone National Park. Find the mean waiting time, median waiting time, longest waiting time and shortest waiting time in minutes.*
+
+```{r}
+data("faithful") #retrieves set
+mean(faithful$waiting) #finds mean
+median(faithful$waiting) #finds median
+max(faithful$waiting) #findsmax
+min(faithful$waiting) #findsmin
+```
+
+## Problem 2
+*The data set `DDT` (**MASS**) contains independent measurements of the pesticide DDT on kale. Make a histogram and a boxplot of the data. From these, guess the mean and median. Check your answers with the appropriate functions.*
+
+```{r}
+library(MASS)
+data("DDT") #retrieves the data set
+hist(DDT,main = "Measurements of the pesticide DDT on kale.", #creates and names histogram
+  xlab = "Amount of DDT",
+  freq = TRUE,
+  breaks = 8,
+  col = "gray")
+boxplot(DDT) #creates boxplot
+#My guess for mean: 3
+#My guess for median: 2.5
+mean(DDT) #calculates actual mean
+median(DDT) #calculates actual median
+```
+
+## Problem 3
+*Write a function 'density_compare()' that fits a density estimate to a given data set and plots that estimate along with the appropriate histogram of the given data set. Try your function with the data set `pi2000` (**UsingR**). Why might you want to add an argument like `breaks = 0:10-.5` to `hist()`? (Hint: read the documentation of `hist()` to see what setting this argument does). Feel free to add other parameters to your plot methods to see how they can be changed.*
+
+```{r}
+library(UsingR)
+data("pi2000")
+density_compare <- function(x) #creates function
+{
+
+hist(x,main = "Density Estimate", #creates histogram
+  xlab = "Value",
+  freq = FALSE,
+  breaks = 0:10-.5,
+  col = "gray")
+lines(density(x)) #displays density line
+}
+density_compare(pi2000) #uses function
+#The break in the histogram normalizes an extreme part of the data set
+```
+
+## BONUS
+*Write a function `isprime()` that checks if a number $x$ is prime by dividing $x$ by all the values in $2, ..., x - 1$ then checking to see if there is a remainder of 0. The expression `a %% b` returns the remainder of `a` divided by `b`.*
+
+```{r}
+# Your code here
+```
+
+*You do not need to check all numbers from 2 to $x - 1$ to see if a number is prime. What is the largest you would need to go for an arbitrary $x$? Create a new function, `isprime2()`, that implements this better (yet still slow) method.*
+
+```{r}
+# Your code here
+```
