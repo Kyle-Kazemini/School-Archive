@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Tank.cs~RF683035f.TMP" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.TestPlatform.ObjectModel" Version="16.8.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Vector2D\Vector2D.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="NetworkController, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\Resources\Libraries\NetworkController.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>
